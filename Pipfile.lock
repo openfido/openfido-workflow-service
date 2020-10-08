@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0bcf77938d6fa741b8e32d48e9b75510b1d5ac850418b40d27ae47fe9e47ba74"
+            "sha256": "4b499c72789e9b46f169b22532453d2e73bf4605db3b8258bded95f6fa0fd554"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -49,18 +49,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:cb3becf1b2f2cb5f58030fe947a6abd26f27c01df0403097ae2a52bfadefcf19",
-                "sha256:de2bdcd9a8d638c2ef391ffc6d4b692ad701a6d8ad6e9d77d016059cf89b481a"
+                "sha256:2415549481e446c6809ff7199d8321f976ece7b7b5c18c829bcee3121a784385",
+                "sha256:82b5c608c3d6bb1bd66b3d2a64a31c8a470294fef61c761bf38f2f8fdc905328"
             ],
             "index": "pypi",
-            "version": "==1.15.12"
+            "version": "==1.15.14"
         },
         "botocore": {
             "hashes": [
-                "sha256:12b2381ee82ff32d5135c0887eadec18d38c8ff7fac06405ba6a8584f2159c3c",
-                "sha256:368f85992b0c7fda95b216776d475791c59e4c4415325fda683a02c5c110cf35"
+                "sha256:539aaf805ad8842ee3fb7350e0a4853f3db6a95ea9ffbe92add1ad2a6636ee86",
+                "sha256:b929e352a6fd4883cae38ba662fbf6ba93a9251acf476aa1e05b0fac1e81c313"
             ],
-            "version": "==1.18.12"
+            "version": "==1.18.14"
         },
         "celery": {
             "hashes": [
@@ -283,7 +283,7 @@
         "openfido-utils": {
             "editable": true,
             "git": "ssh://git@github.com/slacgismo/openfido-utils.git",
-            "ref": "1701a005d7a42ae7249be78da0f0ac3ab78ee432"
+            "ref": "788021daedb27d5ebce2285003b34bc0d3b4297c"
         },
         "packaging": {
             "hashes": [
@@ -637,11 +637,11 @@
         },
         "isort": {
             "hashes": [
-                "sha256:36f0c6659b9000597e92618d05b72d4181104cf59472b1c6a039e3783f930c95",
-                "sha256:ba040c24d20aa302f78f4747df549573ae1eaf8e1084269199154da9c483f07f"
+                "sha256:2f510f34ae18a8d0958c53eec51ef84fd099f07c4c639676525acbcd7b5bd3ff",
+                "sha256:dd3211f513f4a92ec1ec1876fc1dc3c686649c349d49523f5b5adbb0814e5960"
             ],
             "markers": "python_version >= '3.6' and python_version < '4.0'",
-            "version": "==5.5.4"
+            "version": "==5.6.1"
         },
         "itsdangerous": {
             "hashes": [

@@ -23,7 +23,7 @@ marshmallow = "*"
 marshmallow_enum = "*"
 boto3 = "*"
 networkx = "*"
-openfido-utils = {editable = true, git = "git@github.com:slacgismo/openfido-utils.git", ref = "master"}
+openfido-utils = {editable = true, git = "git@github.com:slacgismo/openfido-utils.git", ref = "opfido-77"}
 
 [requires]
 python_version = "3.8"
