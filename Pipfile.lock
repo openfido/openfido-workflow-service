@@ -282,7 +282,7 @@
         "openfido-utils": {
             "editable": true,
             "git": "ssh://git@github.com/slacgismo/openfido-utils.git",
-            "ref": "1701a005d7a42ae7249be78da0f0ac3ab78ee432"
+            "ref": "4af5a3c99be376cf141ef49e7ffe14b5a8b690cc"
         },
         "packaging": {
             "hashes": [
