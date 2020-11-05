@@ -98,7 +98,6 @@ class PipelineRun(CommonColumnsMixin, db.Model):
 
     sequence = db.Column(db.Integer, nullable=False)
     worker_ip = db.Column(db.String(50), nullable=True)
-    callback_url = db.Column(db.String(2000), nullable=True)
     started_at = db.Column(db.DateTime, nullable=True)
     completed_at = db.Column(db.DateTime, nullable=True)
     std_out = db.Column(db.Unicode, nullable=True)

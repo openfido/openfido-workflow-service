@@ -63,7 +63,6 @@ def test_create_run_bad_callback_url(client, pipeline, client_application):
         content_type="application/json",
         json={
             "inputs": [{"name": "name1.pdf", "url": "http://example.com"}],
-            "callback_url": "notaurl",
         },
         headers={ROLES_KEY: client_application.api_key},
     )
@@ -77,7 +76,6 @@ def test_create_run_bad_input_url(client, pipeline, client_application):
         content_type="application/json",
         json={
             "inputs": [{"name": "name1.pdf", "url": "notaurl"}],
-            "callback_url": "http://example.com",
         },
         headers={ROLES_KEY: client_application.api_key},
     )
@@ -91,7 +89,6 @@ def test_create_run(client, pipeline, client_application, mock_execute_pipeline)
         content_type="application/json",
         json={
             "inputs": [{"name": "name1.pdf", "url": "http://example.com"}],
-            "callback_url": "http://callback.com",
         },
         headers={ROLES_KEY: client_application.api_key},
     )
@@ -99,7 +96,50 @@ def test_create_run(client, pipeline, client_application, mock_execute_pipeline)
     assert len(pipeline.pipeline_runs) == 1
     assert pipeline.pipeline_runs[0].run_state_enum() == RunStateEnum.NOT_STARTED
     assert len(pipeline.pipeline_runs[0].pipeline_run_inputs) == 1
-    assert pipeline.pipeline_runs[0].callback_url == "http://callback.com"
+    pipeline_run = pipeline.pipeline_runs[0]
+
+    assert result.json == {
+        "uuid": pipeline_run.uuid,
+        "sequence": pipeline_run.sequence,
+        "created_at": to_iso8601(pipeline_run.created_at),
+        "inputs": [
+            {
+                "name": "name1.pdf",
+                "url": "http://example.com",
+            }
+        ],
+        "states": [
+            {
+                "state": RunStateEnum.QUEUED.name,
+                "created_at": to_iso8601(
+                    pipeline_run.pipeline_run_states[0].created_at
+                ),
+            },
+            {
+                "state": RunStateEnum.NOT_STARTED.name,
+                "created_at": to_iso8601(
+                    pipeline_run.pipeline_run_states[1].created_at
+                ),
+            },
+        ],
+        "artifacts": [],
+    }
+
+
+def test_create_run_no_input_file(client, pipeline, client_application, mock_execute_pipeline):
+    db.session.commit()
+    result = client.post(
+        f"/v1/pipelines/{pipeline.uuid}/runs",
+        content_type="application/json",
+        json={
+            "inputs": [{"name": "name1.pdf", "url": "http://example.com"}],
+        },
+        headers={ROLES_KEY: client_application.api_key},
+    )
+    assert result.status_code == 200
+    assert len(pipeline.pipeline_runs) == 1
+    assert pipeline.pipeline_runs[0].run_state_enum() == RunStateEnum.NOT_STARTED
+    assert len(pipeline.pipeline_runs[0].pipeline_run_inputs) == 1
     pipeline_run = pipeline.pipeline_runs[0]
 
     assert result.json == {

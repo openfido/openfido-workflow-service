@@ -23,7 +23,6 @@ class CreateRunSchema(Schema):
     """ Validation schema for create_run() """
 
     inputs = fields.Nested(InputSchema, many=True, required=True)
-    callback_url = fields.Url(required=True)
 
 
 class UpdateRunStateSchema(Schema):

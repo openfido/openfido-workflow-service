@@ -232,7 +232,7 @@ def create_workflow_run(workflow_uuid, run_json):
         if workflow_pipeline.is_deleted:
             continue
         queue_run = len(workflow_pipeline.source_workflow_pipelines) > 0
-        no_input_data = {"callback_url": data["callback_url"], "inputs": []}
+        no_input_data = {"inputs": []}
         run_data = no_input_data if queue_run else data
         pipeline_run = create_pipeline_run(
             workflow_pipeline.pipeline.uuid, run_data, queue_run

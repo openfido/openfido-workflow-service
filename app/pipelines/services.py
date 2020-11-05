@@ -44,18 +44,6 @@ def delete_pipeline(pipeline_uuid):
     db.session.commit()
 
 
-def _validate_pipeline_params(
-    name, description, docker_image_url, repository_ssh_url, repository_branch
-):
-    """ Deprecated - replace with marshmallow validation. """
-    if len(name) == 0 or len(description) == 0:
-        raise ValueError("name and description must be supplied.")
-    if len(docker_image_url) == 0:
-        raise ValueError("A docker image URL must be supplied.")
-    if len(repository_ssh_url) == 0 or len(repository_branch) == 0:
-        raise ValueError("A ssh URL must be supplied.")
-
-
 def create_pipeline(
     name, description, docker_image_url, repository_ssh_url, repository_branch
 ):
@@ -63,9 +51,6 @@ def create_pipeline(
 
     Note: The db.session is not committed. Be sure to commit the session.
     """
-    _validate_pipeline_params(
-        name, description, docker_image_url, repository_ssh_url, repository_branch
-    )
 
     pipeline = Pipeline(
         name=name,
@@ -91,9 +76,6 @@ def update_pipeline(
 
     Note: The db.session is not committed. Be sure to commit the session.
     """
-    _validate_pipeline_params(
-        name, description, docker_image_url, repository_ssh_url, repository_branch
-    )
     pipeline = find_pipeline(pipeline_uuid)
     if pipeline is None:
         raise ValueError("no pipeline found")
@@ -130,9 +112,9 @@ def create_pipeline_run(pipeline_uuid, inputs_json, queued=False):
         raise ValueError("no pipeline found")
 
     sequence = len(pipeline.pipeline_runs) + 1
-    pipeline_run = PipelineRun(sequence=sequence, callback_url=data["callback_url"])
+    pipeline_run = PipelineRun(sequence=sequence)
 
-    for i in data["inputs"]:
+    for i in data.get("inputs", []):
         pipeline_run.pipeline_run_inputs.append(
             PipelineRunInput(filename=i["name"], url=i["url"])
         )
@@ -190,22 +172,6 @@ def update_pipeline_run_output(pipeline_uuid, std_out, std_err):
     db.session.commit()
 
 
-def notify_callback(pipeline_run):
-    pipeline_uuid = pipeline_run.uuid
-    url = pipeline_run.callback_url
-    state = pipeline_run.pipeline_run_states[-1]
-
-    data = json.dumps({"pipeline_run_uuid": pipeline_uuid, "state": state.name})
-
-    request = urllib_request.Request(
-        url, data.encode("ascii"), {"content-type": "application/json"}
-    )
-    try:
-        urllib_request.urlopen(request, timeout=CALLBACK_TIMEOUT)
-    except URLError as e:
-        logger.warning(e)
-
-
 def update_pipeline_run_state(
     pipeline_uuid, run_state_json, apply_to_workflow_run=True
 ):
@@ -228,8 +194,6 @@ def update_pipeline_run_state(
     pipeline_run.pipeline_run_states.append(create_pipeline_run_state(data["state"]))
 
     db.session.commit()
-
-    notify_callback(pipeline_run)
 
     if apply_to_workflow_run:
         from app.workflows.services import update_workflow_run

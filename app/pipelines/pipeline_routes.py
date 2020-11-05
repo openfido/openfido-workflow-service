@@ -89,19 +89,16 @@ def create():
         description: "Bad request"
     """
     name = request.json["name"]
-    description = request.json.get("description")
+    description = request.json.get("description", "")
     docker_image_url = request.json["docker_image_url"]
     repository_ssh_url = request.json["repository_ssh_url"]
     repository_branch = request.json["repository_branch"]
-    try:
-        pipeline = create_pipeline(
-            name, description, docker_image_url, repository_ssh_url, repository_branch
-        )
-        db.session.commit()
+    pipeline = create_pipeline(
+        name, description, docker_image_url, repository_ssh_url, repository_branch
+    )
+    db.session.commit()
 
-        return jsonify(PipelineSchema().dump(pipeline))
-    except ValueError:
-        return {"message": "Unable to create pipeline"}, 400
+    return jsonify(PipelineSchema().dump(pipeline))
 
 
 @pipeline_bp.route("/<pipeline_uuid>", methods=["GET"])

@@ -19,8 +19,9 @@ logger = logging.getLogger("pipeline-runs")
 run_bp = Blueprint("pipeline-runs", __name__)
 
 
+
 @run_bp.route("/<pipeline_uuid>/runs", methods=["POST"])
-@verify_content_type_and_params(["inputs", "callback_url"], [])
+@verify_content_type_and_params([], ["inputs"])
 @permissions_required([SystemPermissionEnum.PIPELINES_CLIENT])
 def create_run(pipeline_uuid):
     """Create a new pipeline run.
