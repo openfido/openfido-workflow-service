@@ -80,7 +80,6 @@ def test_find_dest_workflow_runs(delay_mock, app, workflow_line):
     workflow_run = create_workflow_run(
         workflow_line.uuid,
         {
-            "callback_url": "http://example.com/cb",
             "inputs": [],
         },
     )
@@ -105,7 +104,6 @@ def test_find_source_workflow_runs(delay_mock, app, workflow_line):
     workflow_run = create_workflow_run(
         workflow_line.uuid,
         {
-            "callback_url": "http://example.com/cb",
             "inputs": [],
         },
     )

@@ -104,8 +104,6 @@ def create():
     except ValueError:
         return {"message": "Unable to create pipeline"}, 400
 
-    return jsonify(PipelineSchema().dump(pipeline))
-
 
 @pipeline_bp.route("/<pipeline_uuid>", methods=["GET"])
 @permissions_required([SystemPermissionEnum.PIPELINES_CLIENT])

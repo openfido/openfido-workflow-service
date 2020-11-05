@@ -18,7 +18,6 @@ def test_start_workflow_run_validation(
         f"/v1/workflows/{workflow_pipeline.workflow.uuid}/runs",
         content_type="application/json",
         json={
-            "callback_url": "https://example.com",
             "inputs": [],
         },
         headers={ROLES_KEY: client_application.api_key},
@@ -37,7 +36,6 @@ def test_start_workflow_run_failure(
         f"/v1/workflows/{workflow_pipeline.workflow.uuid}/runs",
         content_type="application/json",
         json={
-            "callback_url": "https://example.com",
             "inputs": [],
         },
         headers={ROLES_KEY: client_application.api_key},
@@ -52,11 +50,11 @@ def test_get_workflow_run_error(client, client_application, workflow_pipeline):
         f"/v1/workflows/{workflow_pipeline.workflow.uuid}/runs",
         content_type="application/json",
         json={
-            "callback_url": "https://example.com",
             "inputs": [],
         },
         headers={ROLES_KEY: client_application.api_key},
     )
+
     workflow_run = workflow_pipeline.workflow.workflow_runs[0]
     workflow_pipeline_run = workflow_run.workflow_pipeline_runs[0]
     pipeline_run = workflow_pipeline_run.pipeline_run
@@ -85,7 +83,6 @@ def test_start_workflow(client, client_application, workflow_pipeline):
         f"/v1/workflows/{workflow_pipeline.workflow.uuid}/runs",
         content_type="application/json",
         json={
-            "callback_url": "https://example.com",
             "inputs": [],
         },
         headers={ROLES_KEY: client_application.api_key},

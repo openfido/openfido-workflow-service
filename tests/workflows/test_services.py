@@ -442,9 +442,7 @@ def test_update_workflow_pipeline_add_dest(app, pipeline, workflow_pipeline):
 
 def test_create_workflow_run_no_workflow(app, pipeline, workflow):
     with pytest.raises(ValueError):
-        services.create_workflow_run(
-            "no-id", {"callback_url": "https://example.com", "inputs": []}
-        )
+        services.create_workflow_run("no-id", {"inputs": []})
 
 
 @patch("app.pipelines.services.execute_pipeline")
@@ -455,7 +453,6 @@ def test_create_workflow_run_deleted_workflow_pipeline(
         workflow_pipeline.workflow.uuid, workflow_pipeline.uuid
     )
     create_data = {
-        "callback_url": "https://example.com",
         "inputs": [],
     }
     workflow = workflow_pipeline.workflow
@@ -467,7 +464,6 @@ def test_create_workflow_run_deleted_workflow_pipeline(
 @patch("app.pipelines.services.execute_pipeline")
 def test_create_workflow_run(execute_pipeline_mock, app, pipeline, workflow_pipeline):
     create_data = {
-        "callback_url": "https://example.com",
         "inputs": [
             {
                 "name": "aname.pdf",
@@ -501,7 +497,6 @@ def test_create_workflow_run(execute_pipeline_mock, app, pipeline, workflow_pipe
 @patch("app.pipelines.services.execute_pipeline")
 def test_create_workflow_run(execute_pipeline_mock, app, workflow_square):
     create_data = {
-        "callback_url": "https://example.com",
         "inputs": [
             {
                 "name": "aname.pdf",
@@ -542,7 +537,6 @@ def _configure_run_state(workflow, run_state_enum, delay_mock):
     services.create_workflow_run(
         workflow.uuid,
         {
-            "callback_url": "http://example.com/cb",
             "inputs": [],
         },
     )
@@ -567,7 +561,6 @@ def test_update_workflow_run_state(app, workflow_pipeline):
     services.create_workflow_run(
         workflow.uuid,
         {
-            "callback_url": "http://example.com/cb",
             "inputs": [],
         },
     )

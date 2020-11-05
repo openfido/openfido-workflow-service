@@ -126,6 +126,7 @@ def test_create_pipeline(client, client_application):
         headers={ROLES_KEY: client_application.api_key},
     )
     assert result.status_code == 200
+    assert result.json is not None
 
     pipeline = Pipeline.query.filter(Pipeline.name == params["name"]).one_or_none()
     assert pipeline.name == "a pipeline"
