@@ -93,10 +93,16 @@ def create():
     docker_image_url = request.json["docker_image_url"]
     repository_ssh_url = request.json["repository_ssh_url"]
     repository_branch = request.json["repository_branch"]
-    pipeline = create_pipeline(
-        name, description, docker_image_url, repository_ssh_url, repository_branch
-    )
-    db.session.commit()
+
+    try:
+        pipeline = create_pipeline(
+            name, description, docker_image_url, repository_ssh_url, repository_branch
+        )
+        db.session.commit()
+
+        return jsonify(PipelineSchema().dump(pipeline))
+    except ValueError:
+        return {"message": "Unable to create pipeline"}, 400
 
     return jsonify(PipelineSchema().dump(pipeline))
 

@@ -18,8 +18,7 @@ A_DOCKER_IMAGE = "example/image"
 A_SSH_URL = "git@github.com:an_org/a_repo.git"
 A_BRANCH = "master"
 
-INVALID_CALLBACK_INPUT = {"inputs": [], "callback_url": "notaurl"}
-VALID_CALLBACK_INPUT = {"inputs": [], "callback_url": "http://example.com"}
+VALID_CALLBACK_INPUT = {"inputs": []}
 
 
 def test_create_pipeline_version_no_name(app):
@@ -87,11 +86,6 @@ def test_delete_pipeline_has_workflow(app, pipeline, workflow, workflow_pipeline
     assert not pipeline.is_deleted
 
 
-def test_create_pipeline_bad_input(app):
-    with pytest.raises(ValidationError):
-        pipeline_run = services.create_pipeline_run("no-id", INVALID_CALLBACK_INPUT)
-
-
 def test_create_pipeline_run_no_pipeline(app):
     with pytest.raises(ValueError):
         pipeline_run = services.create_pipeline_run("no-id", VALID_CALLBACK_INPUT)
@@ -100,7 +94,7 @@ def test_create_pipeline_run_no_pipeline(app):
 def test_start_pipeline_run_bad_state(app, pipeline):
     pipeline_run = services.create_pipeline_run(
         pipeline.uuid,
-        {"inputs": [], "callback_url": "http://example.com"},
+        {"inputs": []},
     )
     with pytest.raises(ValueError):
         services.start_pipeline_run(pipeline_run)
@@ -117,7 +111,7 @@ def test_create_pipeline_run(app, pipeline, mock_execute_pipeline):
     }
     pipeline_run = services.create_pipeline_run(
         pipeline.uuid,
-        {"inputs": [input1, input2], "callback_url": "http://example.com"},
+        {"inputs": [input1, input2]},
     )
     assert pipeline_run.pipeline == pipeline
     assert pipeline_run.sequence == 1
@@ -140,7 +134,7 @@ def test_create_queued_pipeline_run(app, pipeline):
     }
     pipeline_run = services.create_pipeline_run(
         pipeline.uuid,
-        {"inputs": [input1, input2], "callback_url": "http://example.com"},
+        {"inputs": [input1, input2]},
         True,
     )
     assert pipeline_run.pipeline == pipeline

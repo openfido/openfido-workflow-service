@@ -487,7 +487,6 @@ def test_create_workflow_run(execute_pipeline_mock, app, pipeline, workflow_pipe
     )
     assert len(workflow_pipeline_run.workflow_pipeline_runs) == 1
     pipeline_run = workflow_pipeline_run.workflow_pipeline_runs[0].pipeline_run
-    assert pipeline_run.callback_url == create_data["callback_url"]
     assert [prs.code for prs in pipeline_run.pipeline_run_states] == [
         RunStateEnum.QUEUED,
         RunStateEnum.NOT_STARTED,

@@ -19,7 +19,6 @@ logger = logging.getLogger("pipeline-runs")
 run_bp = Blueprint("pipeline-runs", __name__)
 
 
-
 @run_bp.route("/<pipeline_uuid>/runs", methods=["POST"])
 @verify_content_type_and_params([], ["inputs"])
 @permissions_required([SystemPermissionEnum.PIPELINES_CLIENT])
@@ -43,8 +42,6 @@ def create_run(pipeline_uuid):
           schema:
             type: object
             properties:
-              callback_url:
-                type: string
               inputs:
                 type: array
                 items:
@@ -108,7 +105,10 @@ def create_run(pipeline_uuid):
     except ValidationError as validation_err:
         logger.warning(validation_err)
         return {"message": "Validation error", "errors": validation_err.messages}, 400
-    except ValueError:
+    except (
+        ValueError,
+        KeyError,
+    ):
         logger.warning("unable to create pipeline run")
         return {
             "message": "Unable to create workflow",

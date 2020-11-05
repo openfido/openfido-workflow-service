@@ -39,8 +39,6 @@ def create_run(workflow_uuid):
           schema:
             type: object
             properties:
-              callback_url:
-                type: string
               inputs:
                 type: array
                 items:

@@ -52,6 +52,18 @@ def create_pipeline(
     Note: The db.session is not committed. Be sure to commit the session.
     """
 
+    if (
+        not name
+        or len(name) == 0
+        or (
+            not docker_image_url
+            or len(docker_image_url) == 0
+            and not repository_ssh_url
+            or len(repository_ssh_url) == 0
+        )
+    ):
+        raise ValueError("name is required")
+
     pipeline = Pipeline(
         name=name,
         description=description,

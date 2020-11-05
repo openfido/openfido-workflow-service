@@ -40,7 +40,7 @@ def test_create_pipeline_non_empty_params(client, client_application):
     # An error is returned if no configuration information is supplied.
     params = {
         "name": "a pipeline",
-        "description": "a description",
+        "description": "",
         "docker_image_url": "",
         "repository_ssh_url": "",
         "repository_branch": "",
@@ -51,6 +51,27 @@ def test_create_pipeline_non_empty_params(client, client_application):
         json=params,
         headers={ROLES_KEY: client_application.api_key},
     )
+
+    assert result.status_code == 400
+
+
+def test_create_pipeline_empty_params(client, client_application):
+    db.session.commit()
+    # An error is returned if no configuration information is supplied.
+    params = {
+        "name": "",
+        "description": "",
+        "docker_image_url": "",
+        "repository_ssh_url": "",
+        "repository_branch": "",
+    }
+    result = client.post(
+        "/v1/pipelines",
+        content_type="application/json",
+        json=params,
+        headers={ROLES_KEY: client_application.api_key},
+    )
+
     assert result.status_code == 400
 
 

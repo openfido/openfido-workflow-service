@@ -15,7 +15,7 @@ def test_create_run_no_such_uuid(client, client_application):
     result = client.post(
         "/v1/pipelines/1111abcd/runs",
         content_type="application/json",
-        json={"inputs": [], "callback_url": "http://example.com"},
+        json={"inputs": []},
         headers={ROLES_KEY: client_application.api_key},
     )
     assert result.status_code == 400
@@ -51,19 +51,6 @@ def test_create_run_bad_input_name(client, pipeline, client_application):
         f"/v1/pipelines/{pipeline.uuid}/runs",
         content_type="application/json",
         json={"inputs": "[]"},
-        headers={ROLES_KEY: client_application.api_key},
-    )
-    assert result.status_code == 400
-
-
-def test_create_run_bad_callback_url(client, pipeline, client_application):
-    db.session.commit()
-    result = client.post(
-        f"/v1/pipelines/{pipeline.uuid}/runs",
-        content_type="application/json",
-        json={
-            "inputs": [{"name": "name1.pdf", "url": "http://example.com"}],
-        },
         headers={ROLES_KEY: client_application.api_key},
     )
     assert result.status_code == 400
@@ -126,7 +113,9 @@ def test_create_run(client, pipeline, client_application, mock_execute_pipeline)
     }
 
 
-def test_create_run_no_input_file(client, pipeline, client_application, mock_execute_pipeline):
+def test_create_run_no_input_file(
+    client, pipeline, client_application, mock_execute_pipeline
+):
     db.session.commit()
     result = client.post(
         f"/v1/pipelines/{pipeline.uuid}/runs",
