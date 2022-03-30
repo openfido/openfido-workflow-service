@@ -13,13 +13,13 @@ RUN apt-get update -qq && apt-get install -y ssh git
 # require a private key to access private github repositories
 ARG SSH_PRIVATE_KEY
 RUN mkdir /root/.ssh/
-RUN echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_ed25519
-RUN chmod 600 /root/.ssh/id_ed25519
+RUN echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa
+RUN chmod 600 /root/.ssh/id_rsa
 RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 ADD Pipfile .
-# ADD Pipfile.lock .
+ADD Pipfile.lock .
 RUN pip install pipenv
 RUN --mount=type=ssh PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --deploy
 
