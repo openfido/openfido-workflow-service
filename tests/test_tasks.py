@@ -138,7 +138,7 @@ def test_execute_pipeline_no_openfido(
     assert run_mock.call_args_list[0][0][0] == "docker pull python:3"
     assert (
         run_mock.call_args_list[1][0][0]
-        == "git clone https://github.com/example gitrepo"
+        == "git clone --depth 1 --branch master https://github.com/example gitrepo"
     )
     assert run_mock.call_args_list[2][0][0] == "git checkout master"
 
@@ -294,7 +294,7 @@ def test_execute_pipeline(
     assert run_mock.call_args_list[0][0][0] == "docker pull python:3"
     assert (
         run_mock.call_args_list[1][0][0]
-        == "git clone https://github.com/example gitrepo"
+        == "git clone --depth 1 --branch master https://github.com/example gitrepo"
     )
     assert run_mock.call_args_list[2][0][0] == "git checkout master"
     assert run_mock.call_args_list[3][0][0] == "mkdir input"

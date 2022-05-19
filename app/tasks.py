@@ -47,9 +47,7 @@ class RunExecutor:
     def _make_request(self, path, data, additional_headers, method="PUT"):
         server = current_app.config["WORKER_API_SERVER"]
         url = f"{server}/v1/pipelines/{self.uuid}/runs/{self.run_uuid}/{path}"
-        headers = {
-            ROLES_KEY: current_app.config[WORKER_API_TOKEN],
-        }
+        headers = {ROLES_KEY: current_app.config[WORKER_API_TOKEN]}
         headers.update(additional_headers)
 
         request = urllib_request.Request(url, data, headers, method=method)
@@ -57,11 +55,7 @@ class RunExecutor:
 
     def _put(self, path, data):
         self._make_request(
-            path,
-            json.dumps(data).encode("ascii"),
-            {
-                "content-type": "application/json",
-            },
+            path, json.dumps(data).encode("ascii"), {"content-type": "application/json"}
         )
 
     def update_run_output(self, stdout, stderr=""):
@@ -125,7 +119,10 @@ def execute_pipeline(
             outputdir = join(tmpdir, "output")
 
             executor.run(f"docker pull {docker_image_url}", tmpdir)
-            executor.run(f"git clone {repository_ssh_url} gitrepo", tmpdir)
+            executor.run(
+                f"git clone --depth 1 --branch {repository_branch} {repository_ssh_url} gitrepo",
+                tmpdir,
+            )
             executor.run(f"git checkout {repository_branch}", gitdir)
 
             if not os.path.exists(join(gitdir, repository_script)):
