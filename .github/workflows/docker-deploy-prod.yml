@@ -1,0 +1,89 @@
+name: Deploy Production
+on: 
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+    deploy-production:
+        runs-on: ubuntu-latest
+        environment: production
+        env:
+          DOCKER_BUILDKIT: "1"
+        steps:
+          - name: Checkout Repository
+            uses: actions/checkout@v3
+
+          - name: Install SSH key
+            uses: shimataro/ssh-key-action@v2
+            with:
+              key: ${{ secrets.SSH_READ_KEY_UTIL }}
+              name: id_rsa # optional
+              known_hosts: ${{ secrets.KNOWN_HOSTS }}
+              if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+
+          - name: copy ssh to root
+            run: |
+              sudo cp -r ~/.ssh /root
+              sudo chmod 600 /root/.ssh/id_rsa
+              sudo chmod o+x /root/
+
+          - name: Install Python
+            uses: actions/setup-python@v3
+            with:
+              python-version: 3.8
+
+          - name: install pipenv
+            run: |
+              python -m pip install --upgrade pip
+              pip install pipenv
+
+          - name: Configure AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v1
+            with:
+              aws-access-key-id: ${{ secrets.PROD_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.PROD_SECRET_ACCESS_KEY }}
+              aws-region: ${{ secrets.AWS_REGION }}
+
+          - name: Login to Amazon ECR
+            id: login-ecr
+            uses: aws-actions/amazon-ecr-login@v1
+
+          # uses repository in your authorized registry to push to.
+          # sign in to your ecr page for a list of all your repositories.
+          - name: Build, tag, and push image to Amazon ECR
+            id: build-image
+            env:
+              ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+              ECR_REPOSITORY: openfido/prod-app
+              IMAGE_TAG: latest
+            run: |
+              eval $(ssh-agent)
+              ssh-add ~/.ssh/id_rsa
+              export DOCKER_BUILDKIT=1
+              docker build --ssh default=${SSH_AUTH_SOCK} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+              docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+              docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+              echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+          # needed for the task-definition.json file, update task family here
+          # can also use the CLI to manually generate the task 
+          - name: Download task definition
+            run: |
+              aws ecs describe-task-definition --task-definition openfido-prod-app-task --query taskDefinition > task-definition.json
+
+          - name: Fill in the new image ID in the Amazon ECS task definition
+            id: task-def
+            uses: aws-actions/amazon-ecs-render-task-definition@v1
+            with:
+              task-definition: task-definition.json
+              container-name: 'openfido-prod-app-task'
+              image: ${{ steps.build-image.outputs.image }}
+
+          - name: Deploy Amazon ECS task definition
+            uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+            with:
+              task-definition: ${{ steps.task-def.outputs.task-definition }}
+              service: 'openfido-prod-app-service'
+              cluster: 'openfido-prod-ecs-cluster'
+              wait-for-service-stability: true
