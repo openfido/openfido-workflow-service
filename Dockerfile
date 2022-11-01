@@ -18,15 +18,14 @@ RUN chmod 600 /root/.ssh/id_rsa
 RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
-ADD Pipfile .
-ADD Pipfile.lock .
-RUN pip install pipenv
-RUN --mount=type=ssh PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --deploy
+ADD requirements.txt .
+RUN python3 -m venv venv
+RUN source venv/bin/activate
+RUN pip install -r requirements.txt
 
 FROM base as runtime
 
 RUN apt-get update -qq && \
-  apt-get install -y pipenv \
   # for db connectivity
   postgresql-client \
   # for healthcheck
