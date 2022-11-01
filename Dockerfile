@@ -38,8 +38,8 @@ RUN apt-get update -qq && \
 RUN mkdir /opt/app
 WORKDIR /opt/app
 
-COPY --from=python-deps /.venv /.venv
-ENV PATH="/.venv/bin:$PATH"
+COPY --from=python-deps /venv /venv
+ENV PATH="/venv/bin:$PATH"
 
 COPY . .
 
