@@ -27,7 +27,7 @@ FROM base as runtime
 
 RUN apt-get update -qq && \
   # for db connectivity
-  postgresql-client \
+  apt-get install -y postgresql-client \
   # for healthcheck
   curl \
   && \
