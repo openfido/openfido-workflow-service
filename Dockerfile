@@ -21,8 +21,6 @@ RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 ADD requirements.txt .
-RUN python3 -m venv env
-RUN source env/bin/activate
 RUN pip install -r requirements.txt
 
 FROM base as runtime
