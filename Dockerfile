@@ -21,8 +21,8 @@ RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 ADD requirements.txt .
-RUN python3 -m venv venv
-RUN source venv/bin/activate
+RUN python3 -m venv .venv
+RUN source .venv/bin/activate
 RUN pip install -r requirements.txt
 
 FROM base as runtime
@@ -38,8 +38,8 @@ RUN apt-get update -qq && \
 RUN mkdir /opt/app
 WORKDIR /opt/app
 
-COPY --from=python-deps /venv /venv
-ENV PATH="/venv/bin:$PATH"
+COPY --from=python-deps /.venv /.venv
+ENV PATH="/.venv/bin:$PATH"
 
 COPY . .
 
