@@ -23,7 +23,8 @@ RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 ADD requirements.txt .
 RUN python3 -m venv /.venv
 RUN source /.venv/bin/activate
-RUN pip install -r requirements.txt
+RUN python3 -m pip install -r requirements.txt
+RUN ls /.venv/bin;sleep 20
 
 FROM base as runtime
 
