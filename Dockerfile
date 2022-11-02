@@ -39,6 +39,7 @@ RUN mkdir /opt/app
 WORKDIR /opt/app
 
 COPY --from=python-deps /.venv /.venv
+RUN source /.venv/bin/activate
 ENV PATH="/.venv/bin:$PATH"
 
 COPY . .
