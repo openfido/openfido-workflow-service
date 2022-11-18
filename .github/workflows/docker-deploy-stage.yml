@@ -105,7 +105,7 @@ jobs:
               eval $(ssh-agent)
               ssh-add ~/.ssh/id_rsa
               export DOCKER_BUILDKIT=1
-              docker build --ssh default=${SSH_AUTH_SOCK} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
+              docker build --ssh default=${secrets.SSH_READ_KEY_UTIL} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
               docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
               echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
@@ -187,7 +187,7 @@ jobs:
               eval $(ssh-agent)
               ssh-add ~/.ssh/id_rsa
               export DOCKER_BUILDKIT=1
-              docker build --ssh default=${SSH_AUTH_SOCK} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.worker .
+              docker build --ssh default=${secrets.SSH_READ_KEY_UTIL} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.worker .
               docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
               echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
@@ -269,7 +269,7 @@ jobs:
               eval $(ssh-agent)
               ssh-add ~/.ssh/id_rsa
               export DOCKER_BUILDKIT=1
-              docker build --ssh default=${SSH_AUTH_SOCK} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.rabbitmq .
+              docker build --ssh default=${secrets.SSH_READ_KEY_UTIL} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.rabbitmq .
               docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
               echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
