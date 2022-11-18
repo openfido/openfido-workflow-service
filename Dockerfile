@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1.0.0-experimental
 FROM python:3.8-slim as base
 
+SHELL ["/bin/bash", "-c"]
+
 ENV PORT 5000
 ENV FLASK_APP run.py
 ENV FLASK_ENV production
@@ -18,17 +20,16 @@ RUN chmod 600 /root/.ssh/id_rsa
 RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
-ADD Pipfile .
-ADD Pipfile.lock .
-RUN pip install pipenv
-RUN --mount=type=ssh PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --deploy
+ADD requirements.txt .
+RUN python3 -m venv /.venv
+RUN source /.venv/bin/activate
+RUN /.venv/bin/python3 -m pip install -r requirements.txt
 
 FROM base as runtime
 
 RUN apt-get update -qq && \
-  apt-get install -y pipenv \
   # for db connectivity
-  postgresql-client \
+  apt-get install -y postgresql-client \
   # for healthcheck
   curl \
   && \
@@ -38,6 +39,7 @@ RUN mkdir /opt/app
 WORKDIR /opt/app
 
 COPY --from=python-deps /.venv /.venv
+RUN source /.venv/bin/activate
 ENV PATH="/.venv/bin:$PATH"
 
 COPY . .

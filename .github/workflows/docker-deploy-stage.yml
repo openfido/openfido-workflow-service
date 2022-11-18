@@ -7,8 +7,6 @@ jobs:
     build:
         runs-on: ubuntu-latest
         environment: Build
-        env:
-          PIPENV_VENV_IN_PROJECT: true
         steps:
           - name: Checkout Repository
             uses: actions/checkout@v3
@@ -26,31 +24,18 @@ jobs:
             with:
               python-version: 3.8
 
-          - name: install pipenv
+          - name: install/upgrade pip
             run: |
               python -m pip install --upgrade pip
-              pip install pipenv
-              pip install virtualenv
 
-          - name: Cache pip environment
-            uses: actions/cache@v3
-            env:
-              cache-name: cache-pipenv
-            with:
-              path: .venv
-              key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-              restore-keys: |
-                ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-
-                ${{ runner.os }}-python-
-                ${{ runner.os }}-
 
           - name: Install Dependencies
-            run: pipenv install --dev --deploy
+            run: python -m pip install -r requirements.txt
 
           - name: Build
             run: |
               mkdir test-results
-              pipenv run invoke test --junit --enforce-percent 99
+              python3 -m invoke test --junit --enforce-percent 99
 
           - name: Store test results as artifacts
             uses: actions/upload-artifact@v2
@@ -59,10 +44,10 @@ jobs:
               path: test-results
 
           - name: Style
-            run: pipenv run invoke style
+            run: python3 -m invoke style
 
           - name: Lint
-            run: pipenv run invoke lint --fail-under=9
+            run: python3 -m invoke lint --fail-under=9
 
     deploy-staging-flow:
         needs: build
@@ -93,10 +78,9 @@ jobs:
             with:
               python-version: 3.8
 
-          - name: install pipenv
+          - name: install/upgrade pip
             run: |
               python -m pip install --upgrade pip
-              pip install pipenv
 
           - name: Configure AWS Credentials
             uses: aws-actions/configure-aws-credentials@v1
@@ -176,10 +160,9 @@ jobs:
             with:
               python-version: 3.8
 
-          - name: install pipenv
+          - name: install/upgrade pip
             run: |
               python -m pip install --upgrade pip
-              pip install pipenv
 
           - name: Configure AWS Credentials
             uses: aws-actions/configure-aws-credentials@v1
@@ -259,10 +242,9 @@ jobs:
             with:
               python-version: 3.8
 
-          - name: install pipenv
+          - name: install/upgrade pip
             run: |
               python -m pip install --upgrade pip
-              pip install pipenv
 
           - name: Configure AWS Credentials
             uses: aws-actions/configure-aws-credentials@v1

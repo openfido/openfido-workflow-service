@@ -64,8 +64,8 @@ To run tests, use [invoke](https://pyinvoke.org):
     docker-compose run --rm workflow-service invoke --cov-report test
 
     # Or if you'd rather run locally
-    pipenv install
-    pipenv run invoke test
+    python3 -m pip install -r requirements.txt
+    python3 -m invoke test
 
 Other tasks are available, in particular the `precommit` task, which mirrors the
 tests performed by CircleCI. See `invoke -l` for a full list of tasks.
