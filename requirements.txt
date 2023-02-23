@@ -31,7 +31,7 @@ marshmallow==3.8.0
 marshmallow-enum==1.5.1
 markupsafe==1.1.1
 networkx==2.5
-git+ssh://git@github.com/slacgismo/openfido-utils.git
+git+ssh://git@github.com/openfido/openfido-utils.git
 packaging==20.4
 prompt-toolkit==3.0.8
 pluggy==0.13.1
