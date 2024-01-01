@@ -33,7 +33,7 @@ markupsafe==1.1.1
 networkx==2.5
 git+ssh://git@github.com/openfido/openfido-utils.git
 packaging==20.4
-prompt-toolkit==3.0.8
+prompt-toolkit==3.0.13
 pluggy==0.13.1
 psycopg2-binary==2.8.6
 py==1.9.0
