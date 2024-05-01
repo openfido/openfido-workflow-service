@@ -1,15 +1,14 @@
 name: Deploy Production
-on: 
-  push:
-    tags:
-      - v*.*.*
+on:
+  release:
+    types: [published]
 jobs:
     build:
         runs-on: ubuntu-latest
         environment: Build
         steps:
           - name: Checkout Repository
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
 
           - name: Install SSH key
             uses: shimataro/ssh-key-action@v2
@@ -20,7 +19,7 @@ jobs:
               if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
           - name: Install Python
-            uses: actions/setup-python@v3
+            uses: actions/setup-python@v4
             with:
               python-version: 3.8
 
@@ -38,7 +37,7 @@ jobs:
               python3 -m invoke test --junit --enforce-percent 99
 
           - name: Store test results as artifacts
-            uses: actions/upload-artifact@v2
+            uses: actions/upload-artifact@v4
             with:
               name: store test results
               path: test-results
@@ -57,7 +56,7 @@ jobs:
           DOCKER_BUILDKIT: "1"
         steps:
           - name: Checkout Repository
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
 
           - name: Install SSH key
             uses: shimataro/ssh-key-action@v2
@@ -74,7 +73,7 @@ jobs:
               sudo chmod o+x /root/
 
           - name: Install Python
-            uses: actions/setup-python@v3
+            uses: actions/setup-python@v4
             with:
               python-version: 3.8
 
@@ -83,7 +82,7 @@ jobs:
               python -m pip install --upgrade pip
 
           - name: Configure AWS Credentials
-            uses: aws-actions/configure-aws-credentials@v1
+            uses: aws-actions/configure-aws-credentials@v4
             with:
               aws-access-key-id: ${{ secrets.PROD_ACCESS_KEY_ID }}
               aws-secret-access-key: ${{ secrets.PROD_SECRET_ACCESS_KEY }}
@@ -91,7 +90,7 @@ jobs:
 
           - name: Login to Amazon ECR
             id: login-ecr
-            uses: aws-actions/amazon-ecr-login@v1
+            uses: aws-actions/amazon-ecr-login@v2
 
           # uses repository in your authorized registry to push to.
           # sign in to your ecr page for a list of all your repositories.
@@ -107,7 +106,7 @@ jobs:
               export DOCKER_BUILDKIT=1
               docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
               docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-              echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+              echo "IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
 
           # needed for the task-definition.json file, update task family here
           # can also use the CLI to manually generate the task 
@@ -121,7 +120,7 @@ jobs:
             with:
               task-definition: task-definition.json
               container-name: 'openfido-prod-workflow-task'
-              image: ${{ steps.build-image.outputs.image }}
+              image: ${{ env.IMAGE }}
 
           - name: Deploy Amazon ECS task definition
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -139,7 +138,7 @@ jobs:
           DOCKER_BUILDKIT: "1"
         steps:
           - name: Checkout Repository
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
 
           - name: Install SSH key
             uses: shimataro/ssh-key-action@v2
@@ -156,7 +155,7 @@ jobs:
               sudo chmod o+x /root/
 
           - name: Install Python
-            uses: actions/setup-python@v3
+            uses: actions/setup-python@v4
             with:
               python-version: 3.8
 
@@ -165,7 +164,7 @@ jobs:
               python -m pip install --upgrade pip
 
           - name: Configure AWS Credentials
-            uses: aws-actions/configure-aws-credentials@v1
+            uses: aws-actions/configure-aws-credentials@v4
             with:
               aws-access-key-id: ${{ secrets.PROD_ACCESS_KEY_ID }}
               aws-secret-access-key: ${{ secrets.PROD_SECRET_ACCESS_KEY }}
@@ -173,7 +172,7 @@ jobs:
 
           - name: Login to Amazon ECR
             id: login-ecr
-            uses: aws-actions/amazon-ecr-login@v1
+            uses: aws-actions/amazon-ecr-login@v2
 
           # uses repository in your authorized registry to push to.
           # sign in to your ecr page for a list of all your repositories.
@@ -189,7 +188,7 @@ jobs:
               export DOCKER_BUILDKIT=1
               docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.worker .
               docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-              echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+              echo "IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
 
           # needed for the task-definition.json file, update task family here
           # can also use the CLI to manually generate the task 
@@ -203,7 +202,7 @@ jobs:
             with:
               task-definition: task-definition.json
               container-name: 'openfido-prod-workflow-worker-task'
-              image: ${{ steps.build-image.outputs.image }}
+              image: ${{ env.IMAGE }}
 
           - name: Deploy Amazon ECS task definition
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -221,7 +220,7 @@ jobs:
           DOCKER_BUILDKIT: "1"
         steps:
           - name: Checkout Repository
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
 
           - name: Install SSH key
             uses: shimataro/ssh-key-action@v2
@@ -238,7 +237,7 @@ jobs:
               sudo chmod o+x /root/
 
           - name: Install Python
-            uses: actions/setup-python@v3
+            uses: actions/setup-python@v4
             with:
               python-version: 3.8
 
@@ -247,7 +246,7 @@ jobs:
               python -m pip install --upgrade pip
 
           - name: Configure AWS Credentials
-            uses: aws-actions/configure-aws-credentials@v1
+            uses: aws-actions/configure-aws-credentials@v4
             with:
               aws-access-key-id: ${{ secrets.PROD_ACCESS_KEY_ID }}
               aws-secret-access-key: ${{ secrets.PROD_SECRET_ACCESS_KEY }}
@@ -255,7 +254,7 @@ jobs:
 
           - name: Login to Amazon ECR
             id: login-ecr
-            uses: aws-actions/amazon-ecr-login@v1
+            uses: aws-actions/amazon-ecr-login@v2
 
           # uses repository in your authorized registry to push to.
           # sign in to your ecr page for a list of all your repositories.
@@ -271,7 +270,7 @@ jobs:
               export DOCKER_BUILDKIT=1
               docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.rabbitmq .
               docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-              echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+              echo "IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
 
           # needed for the task-definition.json file, update task family here
           # can also use the CLI to manually generate the task 
@@ -285,7 +284,7 @@ jobs:
             with:
               task-definition: task-definition.json
               container-name: 'openfido-prod-rabbitmq-task'
-              image: ${{ steps.build-image.outputs.image }}
+              image: ${{ env.IMAGE }}
 
           - name: Deploy Amazon ECS task definition
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
