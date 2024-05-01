@@ -1,15 +1,16 @@
 name: Test-build
-on: 
+on:
   push:
-    branches-ignore:
-      - master
+    branches: [develop,master]
+  pull_request:
+    branches: [develop,master]
 jobs:
     test-build:
         runs-on: ubuntu-latest
         environment: Build
         steps:
           - name: Checkout Repository
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
 
           - name: Install SSH key
             uses: shimataro/ssh-key-action@v2
@@ -20,7 +21,7 @@ jobs:
               if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
           - name: Install Python
-            uses: actions/setup-python@v3
+            uses: actions/setup-python@v4
             with:
               python-version: 3.8
 
@@ -38,7 +39,7 @@ jobs:
               python3 -m invoke test --junit --enforce-percent 99
 
           - name: Store test results as artifacts
-            uses: actions/upload-artifact@v2
+            uses: actions/upload-artifact@v4
             with:
               name: store test results
               path: test-results
