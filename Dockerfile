@@ -10,13 +10,14 @@ EXPOSE 5000
 
 FROM base as python-deps
 
-RUN apt-get update -qq && apt-get install -y ssh git
+RUN apt-get update -qq && apt-get install -y ssh git openssl
+RUN apt-get upgrade -y openssl
 
 # require a private key to access private github repositories
 ARG SSH_PRIVATE_KEY
-RUN mkdir /root/.ssh/
-RUN echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa
-RUN chmod 600 /root/.ssh/id_rsa
+RUN mkdir -p /root/.ssh/
+RUN echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_ed25519
+RUN chmod 600 /root/.ssh/id_ed25519
 RUN touch /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
