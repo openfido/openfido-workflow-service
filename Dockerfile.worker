@@ -4,6 +4,7 @@ FROM python:3.9-slim as base
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update -qq && apt-get install -y ssh git bash
+RUN apt-get upgrade -y bash
 
 # require a private key to access private github repositories
 ARG SSH_PRIVATE_KEY

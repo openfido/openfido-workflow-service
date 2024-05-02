@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.0.0-experimental
-FROM python:3.8-slim as base
+FROM python:3.9-slim as base
 
 SHELL ["/bin/bash", "-c"]
 
@@ -10,8 +10,8 @@ EXPOSE 5000
 
 FROM base as python-deps
 
-RUN apt-get update -qq && apt-get install -y ssh git openssl
-RUN apt-get upgrade -y openssl
+RUN apt-get update -qq && apt-get install -y ssh git openssl bash
+RUN apt-get upgrade -y openssl bash
 
 # require a private key to access private github repositories
 ARG SSH_PRIVATE_KEY
