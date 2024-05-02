@@ -10,7 +10,7 @@ EXPOSE 5000
 
 FROM base as python-deps
 
-RUN apt-get update -qq && apt-get install -y ssh git
+RUN apt-get update -qq && apt-get install -y ssh git openssl
 
 # require a private key to access private github repositories
 ARG SSH_PRIVATE_KEY
