@@ -4,6 +4,8 @@ FROM python:3.10-slim as base
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update -qq && apt-get install -y ssh git bash
+RUN apt-get install -y libpq-dev python3-psycopg2 mariadb-client postgresql-client
+RUN apt-get install -y python3-dev default-libmysqlclient-dev build-essential
 RUN apt-get upgrade -y bash dash
 
 # require a private key to access private github repositories

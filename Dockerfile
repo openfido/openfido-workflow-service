@@ -11,6 +11,9 @@ EXPOSE 5000
 FROM base as python-deps
 
 RUN apt-get update -qq && apt-get install -y ssh git openssl bash
+# Install required system dependencies including Nginx
+RUN apt-get install -y libpq-dev python3-psycopg2 mariadb-client postgresql-client
+RUN apt-get install -y python3-dev default-libmysqlclient-dev build-essential
 RUN apt-get upgrade -y openssl bash dash
 
 # require a private key to access private github repositories
