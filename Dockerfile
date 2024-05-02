@@ -13,9 +13,6 @@ FROM base as python-deps
 RUN apt-get update -qq && apt-get install -y ssh git openssl
 RUN apt-get upgrade -y openssl
 
-# Check OpenSSL version
-RUN if openssl version | grep -q -v '1.1.'; then echo 'OpenSSL version is too low for ed25519 keys. Please use a newer version of OpenSSL.' && exit 1; fi
-
 # require a private key to access private github repositories
 ARG SSH_PRIVATE_KEY
 RUN mkdir -p /root/.ssh/
