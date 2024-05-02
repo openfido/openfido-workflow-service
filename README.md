@@ -29,7 +29,7 @@ have [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://
     # access (to access other openslac private repositories)
     export DOCKER_BUILDKIT=1
     export COMPOSE_DOCKER_CLI_BUILD=1
-    docker-compose build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)"
+    docker-compose build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_ed25519)"
     # TODO at some point docker-compose will support the "--ssh default" docker
     # parameter - until then we need to pass the key manually :(
 
