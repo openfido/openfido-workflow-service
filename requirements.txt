@@ -18,7 +18,7 @@ flask-cors==3.0.9
 flask-migrate==2.5.3
 flask-sqlalchemy==2.4.4
 freezegun==1.0.0
-idna==2.10
+idna==3.7
 iniconfig==1.1.1
 itsdangerous==1.1.0
 jinja2==2.11.2
