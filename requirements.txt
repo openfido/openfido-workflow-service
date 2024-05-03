@@ -75,5 +75,5 @@ pylint==2.6.0
 pylint-flask-sqlalchemy==0.2.0
 pyrsistent==0.17.3
 pyyaml==5.3.1
-wrapt==1.12.1
+wrapt==1.16.0
 vine==5.0.0
