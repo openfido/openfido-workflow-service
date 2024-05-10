@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.0.0-experimental
-FROM python:3.10-slim as base
+FROM python:3.13.0b1-slim as base
 
 SHELL ["/bin/bash", "-c"]
 
