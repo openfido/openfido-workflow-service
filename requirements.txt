@@ -59,7 +59,7 @@ tld==0.12.2
 toml==0.10.1
 typed-ast==1.5.5
 typing-extensions==3.7.4.3
-urllib3==1.25.11
+urllib3==1.26.17
 werkzeug==1.0.1
 astroid==2.4.2
 flasgger==0.9.5
